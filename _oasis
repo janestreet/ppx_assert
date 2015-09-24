@@ -1,0 +1,46 @@
+OASISFormat:      0.3
+OCamlVersion:     >= 4.02.3
+FindlibVersion:   >= 1.3.2
+Name:             ppx_assert
+Version:          113.09.00
+Synopsis:         Assert-like extension nodes that raise useful errors on failure
+Authors:          Jane Street Group, LLC <opensource@janestreet.com>
+Copyrights:       (C) 2015 Jane Street Group LLC <opensource@janestreet.com>
+Maintainers:      Jane Street Group, LLC <opensource@janestreet.com>
+License:          Apache-2.0
+LicenseFile:      LICENSE.txt
+Homepage:         https://github.com/janestreet/ppx_assert
+Plugins:          StdFiles (0.3), DevFiles (0.3), META (0.3)
+XStdFilesAUTHORS: false
+XStdFilesREADME:  false
+BuildTools:       ocamlbuild
+
+Library ppx_assert
+  Path:               src
+  Pack:               false
+  Modules:            Ppx_assert
+  BuildDepends:       compiler-libs,
+                      ppx_core,
+                      ppx_driver,
+                      ppx_here.expander,
+                      ppx_sexp_conv.expander,
+                      ppx_compare.expander,
+                      ppx_tools.metaquot
+
+Library ppx_assert_lib
+  Path:               runtime-lib
+  Pack:               true
+  FindlibName:        runtime-lib
+  FindlibParent:      ppx_assert
+  Modules:            Runtime
+  Build:              true
+  Install:            true
+  BuildDepends:       sexplib
+
+Executable ppx
+  Path:               as_ppx
+  MainIs:             ppx.ml
+  Build:              true
+  Install:            false
+  CompiledObject:     byte
+  BuildDepends:       ppx_assert, ppx_driver
