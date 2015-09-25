@@ -1,5 +1,50 @@
     <**/*.ml{,i}>: warn(-40)
 # OASIS_START
+# DO NOT EDIT (digest: 94be03199d64cc9296760fe2acbdcb58)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+true: annot, bin_annot
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library ppx_assert
+"src/ppx_assert.cmxs": use_ppx_assert
+<src/*.ml{,i,y}>: package(compiler-libs)
+<src/*.ml{,i,y}>: package(ppx_compare.expander)
+<src/*.ml{,i,y}>: package(ppx_core)
+<src/*.ml{,i,y}>: package(ppx_driver)
+<src/*.ml{,i,y}>: package(ppx_here.expander)
+<src/*.ml{,i,y}>: package(ppx_sexp_conv.expander)
+<src/*.ml{,i,y}>: package(ppx_tools.metaquot)
+# Library ppx_assert_lib
+"runtime-lib/ppx_assert_lib.cmxs": use_ppx_assert_lib
+"runtime-lib/runtime.cmx": for-pack(Ppx_assert_lib)
+<runtime-lib/*.ml{,i,y}>: package(sexplib)
+# Executable ppx
+"as_ppx/ppx.byte": package(compiler-libs)
+"as_ppx/ppx.byte": package(ppx_compare.expander)
+"as_ppx/ppx.byte": package(ppx_core)
+"as_ppx/ppx.byte": package(ppx_driver)
+"as_ppx/ppx.byte": package(ppx_here.expander)
+"as_ppx/ppx.byte": package(ppx_sexp_conv.expander)
+"as_ppx/ppx.byte": package(ppx_tools.metaquot)
+"as_ppx/ppx.byte": use_ppx_assert
+<as_ppx/*.ml{,i,y}>: package(compiler-libs)
+<as_ppx/*.ml{,i,y}>: package(ppx_compare.expander)
+<as_ppx/*.ml{,i,y}>: package(ppx_core)
+<as_ppx/*.ml{,i,y}>: package(ppx_driver)
+<as_ppx/*.ml{,i,y}>: package(ppx_here.expander)
+<as_ppx/*.ml{,i,y}>: package(ppx_sexp_conv.expander)
+<as_ppx/*.ml{,i,y}>: package(ppx_tools.metaquot)
+<as_ppx/*.ml{,i,y}>: use_ppx_assert
 # OASIS_STOP
     <src/*>: linkall
 <as_ppx/ppx.{byte,native}>: predicate(ppx_driver)
