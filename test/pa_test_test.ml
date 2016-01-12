@@ -29,7 +29,7 @@ let test_exn exn str =
 
 let%test_unit _ = [%test_eq: int] 1 1
 let%test _ =
-  try [%test_eq: int * int] ~here:[_here_] ~message:"int tuple" (5, 5) (5, 6); false
+  try [%test_eq: int * int] ~here:[[%here]] ~message:"int tuple" (5, 5) (5, 6); false
   with e ->
     test_exn e "(runtime.ml.E \"int tuple: comparison failed\"
                  ((5 5) vs (5 6)
@@ -39,7 +39,7 @@ let%test _ =
 
 let%test_unit _ = [%test_result: int] (1 + 2) ~message:"size" ~expect:3
 let%test _ =
-  try [%test_result: int * int] ~here:[_here_] (5, 5) ~expect:(5, 6); false
+  try [%test_result: int * int] ~here:[[%here]] (5, 5) ~expect:(5, 6); false
   with e ->
     test_exn e "(runtime.ml.E \"got unexpected result\"
                  ((expected (5 6)) (got (5 5))
@@ -58,22 +58,22 @@ let%test_unit _ = [%test_eq: int] ~equal:(fun x y -> x mod 2 = y mod 2) 4 6
 
 (* An example where the list of positions that <:test_eq< ... >> takes comes in handy,
    because the position of <:test_eq< ... >> itself is not very informative. *)
-let test_is_zero ~here x = [%test_eq: int] 0 x ~here:(_here_ :: here)
+let test_is_zero ~here x = [%test_eq: int] 0 x ~here:([%here] :: here)
 
 let test_odds n ~here =
   for i = 0 to n do
     let odd = 2 * i + 1 in
-    test_is_zero ~here:(_here_ :: here) (odd - odd)
+    test_is_zero ~here:([%here] :: here) (odd - odd)
   done
 
 let test_evens n ~here =
   for i = 0 to n do
     let even = 2 * i in
-    test_is_zero ~here:(_here_ :: here) (even - even)
+    test_is_zero ~here:([%here] :: here) (even - even)
   done
 
 let test_all n =
-  test_odds n ~here:[_here_];
-  test_evens n ~here:[_here_]
+  test_odds n ~here:[[%here]];
+  test_evens n ~here:[[%here]]
 
 let%test_unit _ = test_all 10
