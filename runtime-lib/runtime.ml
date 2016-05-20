@@ -3,6 +3,7 @@ open Sexplib.Conv
 
 exception E of string * Sexp.t [@@deriving sexp]
 
+(* This is the same function as Ppx_here.lift_position_as_string. *)
 let make_location_string ~pos_fname ~pos_lnum ~pos_cnum ~pos_bol =
   String.concat ""
     [ pos_fname
@@ -27,7 +28,7 @@ let fail_in_sexp_style ~message ~pos ~here ~tag body =
   let sexp =
     Sexp.List (
       body
-      @ [ Sexp.List [ Sexp.Atom "Loc"; sexp_of_loc pos ] ]
+      @ [ Sexp.List [ Sexp.Atom "Loc"; Sexp.Atom pos ] ]
       @ begin match here with
         | [] -> []
         | _ -> [ Sexp.List [ Sexp.Atom "Stack"; sexp_of_list sexp_of_loc here ] ]

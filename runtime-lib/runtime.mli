@@ -3,7 +3,7 @@ open Sexplib
 (** Functions called by the generated code *)
 
 val test_pred :
-  pos:Lexing.position ->
+  pos:string ->
   sexpifier:('a -> Sexp.t) ->
   here:Lexing.position list ->
   ?message:string ->
@@ -12,7 +12,7 @@ val test_pred :
   unit
 
 val test_eq :
-  pos:Lexing.position ->
+  pos:string ->
   sexpifier:('a -> Sexp.t) ->
   comparator:('a -> 'a -> int) ->
   here:Lexing.position list ->
@@ -23,7 +23,7 @@ val test_eq :
   unit
 
 val test_result :
-  pos:Lexing.position ->
+  pos:string ->
   sexpifier:('a -> Sexp.t) ->
   comparator:('a -> 'a -> int) ->
   here:Lexing.position list ->
