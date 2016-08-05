@@ -1,0 +1,11 @@
+(library
+ ((name pa_test_test_lib)
+  (libraries (sexplib str))
+  (preprocess
+   (((pps (pa_type_conv
+           pa_compare
+           pa_sexp_conv
+           pa_here
+           pa_test
+           ppx_inline_test))
+     All)))))
