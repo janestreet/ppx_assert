@@ -77,3 +77,7 @@ let test_all n =
   test_evens n ~here:[[%here]]
 
 let%test_unit _ = test_all 10
+
+let _ = ([%test_result: int] : [%test_result: int])
+let _ = ([%test_eq: int] : [%test_eq: int])
+let _ = ([%test_pred: int] : [%test_pred: int])

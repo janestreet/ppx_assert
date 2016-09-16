@@ -1,5 +1,5 @@
 (library
- ((name pa_test_test_lib)
+ ((name ppx_assert_test_lib)
   (libraries (sexplib str))
   (preprocess
    (((pps (pa_type_conv

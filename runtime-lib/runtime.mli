@@ -1,5 +1,30 @@
 open Sexplib
 
+(** Types used in the generated code *)
+
+type 'a test_pred
+  = ?here:Lexing.position list
+  -> ?message:string
+  -> ('a -> bool)
+  -> 'a
+  -> unit
+
+type 'a test_eq
+  = ?here:Lexing.position list
+  -> ?message:string
+  -> ?equal:('a -> 'a -> bool)
+  -> 'a
+  -> 'a
+  -> unit
+
+type 'a test_result
+   = ?here:Lexing.position list
+  -> ?message:string
+  -> ?equal:('a -> 'a -> bool)
+  -> expect:'a
+  -> 'a
+  -> unit
+
 (** Functions called by the generated code *)
 
 val test_pred :
@@ -35,11 +60,6 @@ val test_result :
 
 (** Called to set/unset the [diff] function, used by [test_result] *)
 val set_diff_function : (from_:string -> to_:string -> unit) option -> unit
-
-(** [string_of_loc] and [sexp_of_loc] are exposed to be rebound in core_kernel. *)
-val string_of_loc : Lexing.position -> string
-val sexp_of_loc : Lexing.position -> Sexp.t
-
 
 
 

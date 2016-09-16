@@ -38,13 +38,20 @@ let expand_test_result ~loc:_ ~path:_ typ =
 
 let extensions =
   let declare name expand =
-    Extension.declare name Extension.Context.expression Ast_pattern.(ptyp __)
-      expand
+    [ Extension.declare name Extension.Context.expression Ast_pattern.(ptyp __)
+        expand;
+      Extension.declare name Extension.Context.core_type Ast_pattern.(ptyp __)
+        (fun ~loc ~path:_ ty ->
+           let open Ast_builder.Default in
+           let ident = Located.lident ~loc ("Ppx_assert_lib.Runtime." ^ name) in
+           ptyp_constr ~loc ident [ty]);
+    ]
   in
-  [ declare "test_pred"   expand_test_pred
-  ; declare "test_eq"     expand_test_eq
-  ; declare "test_result" expand_test_result
-  ]
+  List.concat
+    [ declare "test_pred"   expand_test_pred
+    ; declare "test_eq"     expand_test_eq
+    ; declare "test_result" expand_test_result
+    ]
 ;;
 
 let () =

@@ -1,6 +1,6 @@
 (library
   ((name ppx_assert_lib)
    (public_name ppx_assert.runtime-lib)
-   (libraries (sexplib))
+   (libraries (base sexplib))
    (preprocess (((pps (SEXP_CONV)) All)))
    (js_of_ocaml ())))
