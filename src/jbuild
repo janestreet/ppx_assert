@@ -1,12 +1,12 @@
 (library
  ((name ppx_assert)
   (public_name ppx_assert)
-  (public_release ((kind ppx_rewriter)))
-  (wrapped false)
-  (libraries (ocamlcommon
+  (ppx_runtime_libraries (ppx_assert.runtime-lib))
+  (kind ppx_rewriter)
+  (libraries (compiler-libs.common
               ppx_core
               ppx_driver
-              ppx_sexp_conv_expander
-              ppx_here_expander
-              ppx_compare_expander))
-  (preprocess ((metaquot All)))))
+              ppx_sexp_conv.expander
+              ppx_here.expander
+              ppx_compare.expander))
+  (preprocess metaquot)))

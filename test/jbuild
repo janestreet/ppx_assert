@@ -2,10 +2,9 @@
  ((name ppx_assert_test_lib)
   (libraries (sexplib str))
   (preprocess
-   (((pps (pa_type_conv
-           pa_compare
-           pa_sexp_conv
-           pa_here
-           pa_test
-           ppx_inline_test))
-     All)))))
+   (pps (ppx_type_conv
+         ppx_compare
+         ppx_sexp_conv
+         ppx_here
+         ppx_assert
+         ppx_inline_test)))))
