@@ -3,10 +3,10 @@
   (public_name ppx_assert)
   (ppx_runtime_libraries (ppx_assert.runtime-lib))
   (kind ppx_rewriter)
-  (libraries (compiler-libs.common
+  (libraries (
               ppx_core
               ppx_driver
               ppx_sexp_conv.expander
               ppx_here.expander
               ppx_compare.expander))
-  (preprocess metaquot)))
+  (preprocess (pps (ppx_metaquot)))))

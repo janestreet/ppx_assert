@@ -1,7 +1,4 @@
-open Parsetree
-open! Ppx_core.Std
-
-[@@@metaloc loc]
+open! Ppx_core
 
 let expand_test_pred ~loc:_ ~path:_ typ =
   let loc = typ.ptyp_loc in
