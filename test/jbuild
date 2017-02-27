@@ -8,3 +8,5 @@
          ppx_here
          ppx_assert
          ppx_inline_test)))))
+
+(jbuild_version jane_street)

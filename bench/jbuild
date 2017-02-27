@@ -2,3 +2,5 @@
  ((name ppx_assert_bench_lib)
   (libraries (ppx_compare.runtime-lib sexplib))
   (preprocess (pps (ppx_assert ppx_bench)))))
+
+(jbuild_version jane_street)

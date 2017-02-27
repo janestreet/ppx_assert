@@ -4,3 +4,5 @@
    (libraries (base base.caml sexplib))
    (preprocess (pps (ppx_type_conv ppx_sexp_conv)))
    (js_of_ocaml ())))
+
+(jbuild_version jane_street)

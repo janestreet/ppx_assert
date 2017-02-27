@@ -10,3 +10,5 @@
               ppx_here.expander
               ppx_compare.expander))
   (preprocess (pps (ppx_metaquot)))))
+
+(jbuild_version jane_street)
