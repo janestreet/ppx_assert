@@ -1,3 +1,8 @@
+---
+title: ppx\_assert
+parent: ../README.md
+---
+
 Assert-like extension nodes that raise useful errors on failure.
 
 This ppx rewriter defines 3 extension nodes.

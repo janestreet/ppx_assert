@@ -7,6 +7,6 @@
          ppx_sexp_conv
          ppx_here
          ppx_assert
-         ppx_inline_test)))))
+         ppx_inline_test ppx_driver.runner)))))
 
 (jbuild_version jane_street)
