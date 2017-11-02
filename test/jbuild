@@ -1,5 +1,6 @@
 (library
  ((name ppx_assert_test_lib)
+  (flags (:standard -safe-string))
   (libraries (sexplib str))
   (preprocess
    (pps (ppx_type_conv
