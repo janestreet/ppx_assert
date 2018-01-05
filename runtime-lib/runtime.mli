@@ -1,4 +1,4 @@
-open Sexplib
+open Base
 
 (** Types used in the generated code *)
 

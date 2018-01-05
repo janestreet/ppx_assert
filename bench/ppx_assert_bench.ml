@@ -1,6 +1,6 @@
 open Ppx_compare_lib.Builtin
-open Sexplib
-open Sexplib.Conv
+open Ppx_sexp_conv_lib
+open Ppx_sexp_conv_lib.Conv
 
 let () =
   Printexc.register_printer (fun exc ->

@@ -17,7 +17,6 @@ depends: [
   "ppx_metaquot"
   "ppx_sexp_conv"
   "ppx_type_conv"
-  "sexplib"
   "jbuilder"                {build & >= "1.0+beta12"}
   "ocaml-migrate-parsetree" {>= "0.4"}
 ]

@@ -1,10 +1,10 @@
 open Ppx_compare_lib.Builtin
-open Sexplib
-open Sexplib.Conv
+open Ppx_sexp_conv_lib
+open Conv
 
 module Sexp = struct
   include Sexp
-  let compare = Pervasives.compare
+  let of_string = Sexplib.Sexp.of_string
 end
 
 let () =
