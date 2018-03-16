@@ -4,13 +4,11 @@
   (ppx_runtime_libraries (ppx_assert.runtime-lib))
   (kind ppx_rewriter)
   (flags (:standard -safe-string))
-  (libraries (
-              ppx_core
-              ppx_driver
+  (libraries (ppxlib
               ppx_sexp_conv.expander
               ppx_here.expander
               ppx_compare.expander))
-  (preprocess (pps (ppx_metaquot ppx_driver.runner)))))
+  (preprocess (pps (ppxlib.metaquot ppxlib.runner)))))
 
 
 (jbuild_version 1)

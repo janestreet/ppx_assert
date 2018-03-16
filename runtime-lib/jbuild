@@ -3,7 +3,7 @@
    (public_name ppx_assert.runtime-lib)
   (flags (:standard -safe-string))
    (libraries (base base.caml))
-   (preprocess (pps (ppx_type_conv ppx_sexp_conv ppx_driver.runner)))
+   (preprocess (pps (ppxlib ppx_sexp_conv ppxlib.runner)))
 ))
 
 

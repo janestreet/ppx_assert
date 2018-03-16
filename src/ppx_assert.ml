@@ -1,4 +1,4 @@
-open! Ppx_core
+open Ppxlib
 
 let expand_test_pred ~loc:_ ~path:_ typ =
   let loc = typ.ptyp_loc in
@@ -52,5 +52,5 @@ let extensions =
 ;;
 
 let () =
-  Ppx_driver.register_transformation "assert" ~extensions
+  Driver.register_transformation "assert" ~extensions
 ;;
