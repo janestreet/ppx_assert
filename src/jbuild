@@ -3,7 +3,6 @@
   (public_name ppx_assert)
   (ppx_runtime_libraries (ppx_assert.runtime-lib))
   (kind ppx_rewriter)
-  (flags (:standard -safe-string))
   (libraries (ppxlib
               ppx_sexp_conv.expander
               ppx_here.expander
