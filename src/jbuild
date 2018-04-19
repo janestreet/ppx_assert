@@ -3,7 +3,8 @@
   (public_name ppx_assert)
   (ppx_runtime_libraries (ppx_assert.runtime-lib))
   (kind ppx_rewriter)
-  (libraries (ppxlib
+  (libraries (
+              ppxlib
               ppx_sexp_conv.expander
               ppx_here.expander
               ppx_compare.expander))
