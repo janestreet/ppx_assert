@@ -16,7 +16,7 @@ let expand_test_eq ~loc:_ ~path:_ typ =
   [%expr fun ?(here= []) ?message ?equal t1 t2 ->
        let pos        = [%e Ppx_here_expander.lift_position_as_string ~loc] in
        let sexpifier  = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ] in
-       let comparator = [%e Ppx_compare_expander.compare_core_type typ  ] in
+       let comparator = [%e Ppx_compare_expander.Compare.core_type typ  ] in
        Ppx_assert_lib.Runtime.test_eq
          ~pos ~sexpifier ~comparator ~here ?message ?equal t1 t2
   ]
@@ -27,7 +27,7 @@ let expand_test_result ~loc:_ ~path:_ typ =
   [%expr fun ?(here= []) ?message ?equal ~expect got ->
        let pos        = [%e Ppx_here_expander.lift_position_as_string ~loc] in
        let sexpifier  = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ] in
-       let comparator = [%e Ppx_compare_expander.compare_core_type typ  ] in
+       let comparator = [%e Ppx_compare_expander.Compare.core_type typ  ] in
        Ppx_assert_lib.Runtime.test_result
          ~pos ~sexpifier ~comparator ~here ?message ?equal ~expect ~got
   ]
