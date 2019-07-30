@@ -16,7 +16,7 @@ type 'a test_eq
   -> unit
 
 type 'a test_result
-   = ?here:Lexing.position list
+  = ?here:Lexing.position list
   -> ?message:string
   -> ?equal:('a -> 'a -> bool)
   -> expect:'a
@@ -42,12 +42,12 @@ let fail_in_sexp_style ~message ~pos ~here ~tag body =
         | _ -> [ Sexp.List [ Sexp.Atom "Stack"
                            ; [%sexp_of: Source_code_position.t list] here
                            ] ]
-        end
+      end
     )
   in
   failwith message sexp
 
-let [@inline never] test_pred_failed ~message ~pos ~here ~sexpifier t =
+let [@cold] test_pred_failed ~message ~pos ~here ~sexpifier t =
   fail_in_sexp_style ~message ~pos ~here ~tag:"predicate failed" [
     Sexp.List [Sexp.Atom "Value"; sexpifier t]
   ]
@@ -59,7 +59,7 @@ let test_pred ~pos ~sexpifier ~here ?message predicate t =
 let r_diff : (from_:string -> to_:string -> unit) option ref = ref None
 let set_diff_function f = r_diff := f
 
-let [@inline never] test_result_or_eq_failed ~sexpifier ~expect ~got =
+let [@cold] test_result_or_eq_failed ~sexpifier ~expect ~got =
   let got = sexpifier got in
   let expect = sexpifier expect in
   begin match !r_diff with
@@ -81,7 +81,7 @@ let test_result_or_eq ~sexpifier ~comparator ?equal ~expect ~got =
   then `Pass
   else test_result_or_eq_failed ~sexpifier ~expect ~got
 
-let [@inline never] test_eq_failed ~message ~pos ~here ~t1 ~t2 =
+let [@cold] test_eq_failed ~message ~pos ~here ~t1 ~t2 =
   fail_in_sexp_style ~message ~pos ~here ~tag:"comparison failed" [
     t1;
     Sexp.Atom "vs";
@@ -93,7 +93,7 @@ let test_eq ~pos ~sexpifier ~comparator ~here ?message ?equal t1 t2 =
   | `Pass -> ()
   | `Fail (t1, t2) -> test_eq_failed ~message ~pos ~here ~t1 ~t2
 
-let [@inline never] test_result_failed ~message ~pos ~here ~expect ~got =
+let [@cold] test_result_failed ~message ~pos ~here ~expect ~got =
   fail_in_sexp_style ~message ~pos ~here ~tag:"got unexpected result" [
     Sexp.List [Sexp.Atom "expected"; expect];
     Sexp.List [Sexp.Atom "got"; got];

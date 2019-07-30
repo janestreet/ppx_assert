@@ -12,6 +12,7 @@ build: [
 depends: [
   "ocaml" {>= "4.04.2"}
   "base"
+  "ppx_cold"
   "ppx_compare"
   "ppx_here"
   "ppx_sexp_conv"
