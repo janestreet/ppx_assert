@@ -72,7 +72,7 @@ let [@cold] test_result_or_eq_failed ~sexpifier ~expect ~got =
   end;
   `Fail (expect, got)
 
-let test_result_or_eq ~sexpifier ~comparator ?equal ~expect ~got =
+let test_result_or_eq ~sexpifier ~comparator ~equal ~expect ~got =
   let pass =
     match equal with
     | None -> comparator got expect = 0
@@ -90,7 +90,7 @@ let [@cold] exn_test_eq ~message ~pos ~here ~t1 ~t2 =
   ]
 
 let test_eq ~pos ~sexpifier ~comparator ~here ?message ?equal t1 t2 =
-  match test_result_or_eq ~sexpifier ~comparator ?equal ~expect:t1 ~got:t2 with
+  match test_result_or_eq ~sexpifier ~comparator ~equal ~expect:t1 ~got:t2 with
   | `Pass -> ()
   | `Fail (t1, t2) -> raise (exn_test_eq ~message ~pos ~here ~t1 ~t2)
 
@@ -100,7 +100,7 @@ let [@cold] exn_test_result ~message ~pos ~here ~expect ~got =
     Sexp.List [Sexp.Atom "got"; got];
   ]
 
-let test_result ~pos ~sexpifier ~comparator ~here ?message ?equal ~expect ~got =
-  match test_result_or_eq ~sexpifier ~comparator ?equal ~expect ~got with
+let[@warning "-16"] test_result ~pos ~sexpifier ~comparator ~here ?message ?equal ~expect ~got =
+  match test_result_or_eq ~sexpifier ~comparator ~equal ~expect ~got with
   | `Pass -> ()
   | `Fail (expect, got) -> raise (exn_test_result ~message ~pos ~here ~expect ~got)
