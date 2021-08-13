@@ -57,7 +57,7 @@ let test_pred ~pos ~sexpifier ~here ?message predicate t =
   if not (predicate t) then
     raise (exn_test_pred ~message ~pos ~here ~sexpifier t)
 
-let r_diff : (from_:string -> to_:string -> unit) option ref = ref None
+let r_diff : (from_:string -> to_:string -> unit) option ref = ref   None
 let set_diff_function f = r_diff := f
 
 let [@cold] test_result_or_eq_failed ~sexpifier ~expect ~got =
