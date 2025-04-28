@@ -5,7 +5,7 @@ let expand_test_pred ~loc:_ ~path:_ typ =
   [%expr
     fun ?(here = []) ?message predicate t ->
       let pos = [%e Ppx_here_expander.lift_position_as_string ~loc] in
-      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ] in
+      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ ~localize:false] in
       Ppx_assert_lib.Runtime.test_pred ~pos ~sexpifier ~here ?message predicate t]
 ;;
 
@@ -14,7 +14,7 @@ let expand_test_eq ~loc:_ ~path:_ typ =
   [%expr
     fun ?(here = []) ?message ?equal t1 t2 ->
       let pos = [%e Ppx_here_expander.lift_position_as_string ~loc] in
-      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ] in
+      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ ~localize:false] in
       let comparator =
         [%e
           Merlin_helpers.hide_expression
@@ -36,7 +36,7 @@ let expand_test_result ~loc:_ ~path:_ typ =
   [%expr
     fun ?(here = []) ?message ?equal ~expect got ->
       let pos = [%e Ppx_here_expander.lift_position_as_string ~loc] in
-      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ] in
+      let sexpifier = [%e Ppx_sexp_conv_expander.Sexp_of.core_type typ ~localize:false] in
       let comparator =
         [%e
           Merlin_helpers.hide_expression
