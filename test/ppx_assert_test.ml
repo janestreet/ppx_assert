@@ -104,3 +104,13 @@ let%test_unit _ = test_all 10
 let _ = ([%test_result: int] : [%test_result: int])
 let _ = ([%test_eq: int] : [%test_eq: int])
 let _ = ([%test_pred: int] : [%test_pred: int])
+
+(* An example of using a [template]d type *)
+  type%template 'a box = { a : 'a }
+  [@@deriving sexp_of, compare] [@@kind k = (bits64, value)]
+
+let _ = [%test_eq: int box] { a = 1 + 2 } { a = 3 * 1 }
+
+let%template _ =
+  Int64_u.([%test_eq: (t box[@kind bits64])] { a = 1L + 2L } { a = 3L * 1L })
+;;
