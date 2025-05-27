@@ -11,7 +11,7 @@ type 'a test_eq =
   -> 'a
   -> unit
 
-type 'a test_result =
+type ('a : value_or_null) test_result =
   ?here:Lexing.position list
   -> ?message:string
   -> ?equal:('a -> 'a -> bool)
