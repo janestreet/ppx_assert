@@ -24,7 +24,8 @@ type 'a test_result =
 (** Functions called by the generated code *)
 
 val test_pred
-  :  pos:string
+  : 'a.
+  pos:string
   -> sexpifier:('a -> Sexp.t)
   -> here:Lexing.position list
   -> ?message:string
@@ -33,7 +34,8 @@ val test_pred
   -> unit
 
 val test_eq
-  :  pos:string
+  : 'a.
+  pos:string
   -> sexpifier:('a -> Sexp.t)
   -> comparator:('a -> 'a -> int)
   -> here:Lexing.position list
@@ -44,7 +46,8 @@ val test_eq
   -> unit
 
 val test_result
-  :  pos:string
+  : 'a.
+  pos:string
   -> sexpifier:('a -> Sexp.t)
   -> comparator:('a -> 'a -> int)
   -> here:Lexing.position list
