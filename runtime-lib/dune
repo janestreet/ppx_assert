@@ -3,4 +3,4 @@
  (public_name ppx_assert.runtime-lib)
  (libraries base)
  (preprocess
-  (pps ppx_sexp_conv ppx_cold)))
+  (pps ppx_sexp_conv ppx_cold ppx_template)))

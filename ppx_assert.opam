@@ -16,6 +16,7 @@ depends: [
   "ppx_compare"
   "ppx_here"
   "ppx_sexp_conv"
+  "ppx_template"
   "dune"          {>= "3.17.0"}
   "ppxlib"        {>= "0.33.0" & < "0.36.0"}
 ]

@@ -1,5 +1,8 @@
 open Base
 
+[%%template:
+[@@@mode.default m = (local, global)]
+
 (** Types used in the generated code *)
 
 type 'a test_pred =
@@ -19,7 +22,10 @@ type 'a test_result =
   -> ?equal:('a -> 'a -> bool)
   -> expect:'a
   -> 'a
-  -> unit
+  -> unit]
+
+[%%template:
+[@@@alloc.default __ @ m = (stack_local, heap_global)]
 
 (** Functions called by the generated code *)
 
@@ -55,7 +61,7 @@ val test_result
   -> ?equal:('a -> 'a -> bool)
   -> expect:'a
   -> got:'a
-  -> unit
+  -> unit]
 
 (** Called to set/unset the [diff] function, used by [test_result] *)
 val set_diff_function : (from_:string -> to_:string -> unit) option -> unit
