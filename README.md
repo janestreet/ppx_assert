@@ -68,3 +68,26 @@ let%test_unit "List.tail" =
 However convenient these extensions are for testing, it is also possible to use these
 extensions even outside of test, in production code, for instance in a function that
 checks invariants, or when checking some form of precondition.
+
+
+Stack
+-----
+
+The extensions `[%test_eq__stack]`, `[%test_result__stack]` and `[%test_pred__stack]` can
+be used to test in a local context:
+
+```ocaml
+let%test_unit _ = [%test_eq__stack: int] 1 1
+```
+
+This will prompt the ppx to reach for `sexp_of_*__stack` and `compare_*__local` functions
+over `sexp_of_*` and `compare_*` functions.
+
+For ease of use, the ppx can be used in conjuction with
+[`ppx_template`](%{root}/ppx/ppx_template/doc/README.mdx):
+
+```ocaml
+let%test_unit _ = ([%test_eq: int] [@alloc stack]) 1 1
+```
+
+This transforms e.g. `[%test_eq ...]` into `[%test_eq__stack ...]`.

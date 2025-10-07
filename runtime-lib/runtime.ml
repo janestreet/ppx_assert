@@ -1,23 +1,33 @@
 open Base
 
+[%%template
+[@@@mode.default m = (local, global)]
+
 type 'a test_pred =
-  ?here:Lexing.position list -> ?message:string -> ('a -> bool) -> 'a -> unit
+  ?here:Lexing.position list
+  -> ?message:string
+  -> ('a @ m -> bool) @ local
+  -> 'a @ m
+  -> unit
 
 type 'a test_eq =
   ?here:Lexing.position list
   -> ?message:string
-  -> ?equal:('a -> 'a -> bool)
-  -> 'a
-  -> 'a
+  -> ?equal:('a @ m -> 'a @ m -> bool) @ local
+  -> 'a @ m
+  -> 'a @ m
   -> unit
 
 type ('a : value_or_null) test_result =
   ?here:Lexing.position list
   -> ?message:string
-  -> ?equal:('a -> 'a -> bool)
-  -> expect:'a
-  -> 'a
-  -> unit
+  -> ?equal:('a @ m -> 'a @ m -> bool) @ local
+  -> expect:'a @ m
+  -> 'a @ m
+  -> unit]
+
+let%template[@alloc heap] globalize_sexp sexp = sexp
+let%template[@alloc stack] globalize_sexp sexp = Sexp.globalize sexp
 
 exception E of string * Sexp.t [@@deriving sexp]
 
@@ -39,10 +49,29 @@ let exn_sexp_style ~message ~pos ~here ~tag body =
       )
   in
   (* Here and in other places we return exceptions, rather than directly raising, and
-     instead raise at the latest moment possible, so backtrace don't include noise from
-     these functions that construct exceptions. *)
+         instead raise at the latest moment possible, so backtrace don't include noise from
+         these functions that construct exceptions. *)
   E (message, sexp)
 ;;
+
+let[@cold] exn_test_eq ~message ~pos ~here ~t1 ~t2 =
+  exn_sexp_style ~message ~pos ~here ~tag:"comparison failed" [ t1; Sexp.Atom "vs"; t2 ]
+;;
+
+let[@cold] exn_test_result ~message ~pos ~here ~expect ~got =
+  exn_sexp_style
+    ~message
+    ~pos
+    ~here
+    ~tag:"got unexpected result"
+    [ Sexp.List [ Sexp.Atom "expected"; expect ]; Sexp.List [ Sexp.Atom "got"; got ] ]
+;;
+
+let r_diff = Dynamic.make (None : (from_:string -> to_:string -> unit) option)
+let set_diff_function f = Dynamic.set_root r_diff f
+
+[%%template
+[@@@alloc.default a @ m = (stack_local, heap_global)]
 
 let[@cold] exn_test_pred ~message ~pos ~here ~sexpifier t =
   exn_sexp_style
@@ -50,20 +79,18 @@ let[@cold] exn_test_pred ~message ~pos ~here ~sexpifier t =
     ~pos
     ~here
     ~tag:"predicate failed"
-    [ Sexp.List [ Sexp.Atom "Value"; sexpifier t ] ]
+    [ Sexp.List [ Sexp.Atom "Value"; (globalize_sexp [@alloc a]) (sexpifier t) ] ]
 ;;
 
 let test_pred ~pos ~sexpifier ~here ?message predicate t =
-  if not (predicate t) then raise (exn_test_pred ~message ~pos ~here ~sexpifier t)
+  if not (predicate t)
+  then raise ((exn_test_pred [@alloc a]) ~message ~pos ~here ~sexpifier t)
 ;;
 
-let r_diff : (from_:string -> to_:string -> unit) option ref = ref None
-let set_diff_function f = r_diff := f
-
 let[@cold] test_result_or_eq_failed ~sexpifier ~expect ~got =
-  let got = sexpifier got in
-  let expect = sexpifier expect in
-  (match !r_diff with
+  let got = (globalize_sexp [@alloc a]) (sexpifier got) in
+  let expect = (globalize_sexp [@alloc a]) (sexpifier expect) in
+  (match Dynamic.get r_diff with
    | None -> ()
    | Some diff ->
      let from_ = Sexp.to_string_hum expect in
@@ -78,26 +105,15 @@ let test_result_or_eq ~sexpifier ~comparator ~equal ~expect ~got =
     | None -> comparator got expect = 0
     | Some f -> f got expect
   in
-  if pass then `Pass else test_result_or_eq_failed ~sexpifier ~expect ~got
-;;
-
-let[@cold] exn_test_eq ~message ~pos ~here ~t1 ~t2 =
-  exn_sexp_style ~message ~pos ~here ~tag:"comparison failed" [ t1; Sexp.Atom "vs"; t2 ]
+  if pass then `Pass else (test_result_or_eq_failed [@alloc a]) ~sexpifier ~expect ~got
 ;;
 
 let test_eq ~pos ~sexpifier ~comparator ~here ?message ?equal t1 t2 =
-  match test_result_or_eq ~sexpifier ~comparator ~equal ~expect:t1 ~got:t2 with
+  match
+    (test_result_or_eq [@alloc a]) ~sexpifier ~comparator ~equal ~expect:t1 ~got:t2
+  with
   | `Pass -> ()
   | `Fail (t1, t2) -> raise (exn_test_eq ~message ~pos ~here ~t1 ~t2)
-;;
-
-let[@cold] exn_test_result ~message ~pos ~here ~expect ~got =
-  exn_sexp_style
-    ~message
-    ~pos
-    ~here
-    ~tag:"got unexpected result"
-    [ Sexp.List [ Sexp.Atom "expected"; expect ]; Sexp.List [ Sexp.Atom "got"; got ] ]
 ;;
 
 let[@warning "-16"] test_result
@@ -110,7 +126,7 @@ let[@warning "-16"] test_result
   ~expect
   ~got
   =
-  match test_result_or_eq ~sexpifier ~comparator ~equal ~expect ~got with
+  match (test_result_or_eq [@alloc a]) ~sexpifier ~comparator ~equal ~expect ~got with
   | `Pass -> ()
   | `Fail (expect, got) -> raise (exn_test_result ~message ~pos ~here ~expect ~got)
-;;
+;;]
