@@ -2,5 +2,5 @@
  (name ppx_assert_test_lib)
  (libraries core unboxed.int64_u sexplib str)
  (preprocess
-  (pps ppx_compare ppx_sexp_conv ppx_here ppx_assert ppx_inline_test
-    ppx_template)))
+  (pps ppx_compare ppx_sexp_conv -compare-require-explicit-locality ppx_here
+    ppx_assert ppx_inline_test ppx_template)))
