@@ -1,5 +1,4 @@
-ppx\_assert
-===========
+# ppx\_assert
 
 Extension nodes to compare value and raise useful errors if they differ.
 
@@ -35,6 +34,20 @@ have one expected value, and one computed value.
 ```ocaml
 ?here:Lexing.position list -> ?message:string -> ?equal:(type -> type -> bool) -> expect:typ -> typ -> unit
 ```
+
+`[%test_result: typ]` also supports the unboxed integer layouts `bits8`, `bits16`,
+`bits32`, `bits64`, and `word`. Use a `[@kind ...]` annotation with
+[`ppx_template`](%{root}/ppx/ppx_template/doc/README.mdx) to select the layout:
+
+```ocaml
+let%test_unit "I32 addition" =
+  ([%test_result: Ox_kernel.I32.t] [@kind bits32])
+    (Ox_kernel.I32.of_int_exn (1 + 2))
+    ~expect:(Ox_kernel.I32.of_int_exn 3)
+```
+
+This covers all the unboxed integer types exposed by `Ox_kernel`: `I8`, `U8`, `I16`,
+`U16`, `I32`, `U32`, `I64`, `U64`, and `Isize`.
 
 `[%test_pred: typ]` in expressions
 ----------------------------------

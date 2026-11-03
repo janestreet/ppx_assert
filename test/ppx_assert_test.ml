@@ -21,6 +21,30 @@ let hide_position_details str = Str.global_replace re_pos "F:L:C" str
 type%template ('a : k) box = { a : 'a }
 [@@deriving sexp_of ~stackify, compare ~localize] [@@kind k = (bits64, value)]
 
+(* Aliases for Ox_kernel's unboxed integer types, templated over kind so the tests below
+   can be templated instead of duplicated per type. *)
+[%%template
+type i = Ox_kernel.I8.t
+[@@deriving compare ~localize, equal ~localize, sexp_of ~stackify] [@@kind bits8]
+
+type i = Ox_kernel.I16.t
+[@@deriving compare ~localize, equal ~localize, sexp_of ~stackify] [@@kind bits16]
+
+type i = Ox_kernel.I32.t
+[@@deriving compare ~localize, equal ~localize, sexp_of ~stackify] [@@kind bits32]
+
+type i = Ox_kernel.I64.t
+[@@deriving compare ~localize, equal ~localize, sexp_of ~stackify] [@@kind bits64]
+
+type i = Ox_kernel.Isize.t
+[@@deriving compare ~localize, equal ~localize, sexp_of ~stackify] [@@kind word]
+
+let i_of_int_exn = Ox_kernel.I8.of_int_exn [@@kind bits8]
+let i_of_int_exn = Ox_kernel.I16.of_int_exn [@@kind bits16]
+let i_of_int_exn = Ox_kernel.I32.of_int_exn [@@kind bits32]
+let i_of_int_exn = Ox_kernel.I64.of_int_exn [@@kind bits64]
+let i_of_int_exn = Ox_kernel.Isize.of_int_exn [@@kind word]]
+
 [%%template
 [@@@alloc.default a @ m = (stack_local, heap_global)]
 
@@ -127,4 +151,46 @@ let%test_unit _ =
   let _test @ portable = [%test_eq: string option] [@alloc a] in
   let _test @ portable = [%test_pred: string option] [@alloc a] in
   ()
+;;]
+
+let require_failed f =
+  match f () with
+  | () -> failwith "expected assertion to fail"
+  | exception _ -> ()
+;;
+
+(* [%test_result], [%test_eq], and [%test_pred] support Ox_kernel's unboxed integer types:
+   they pass on equal values and fail on unequal ones. *)
+[%%template
+[@@@alloc.default a @ l = (stack_local, heap_global)]
+[@@@kind.default k = (bits8, bits16, bits32, bits64, word)]
+
+let _ =
+  ([%test_result: (i[@kind k])] [@kind k] [@alloc a]
+   : ([%test_result: (i[@kind k])][@kind k] [@mode l]))
+;;
+
+let _ =
+  ([%test_eq: (i[@kind k])] [@kind k] [@alloc a]
+   : ([%test_eq: (i[@kind k])][@kind k] [@mode l]))
+;;
+
+let _ =
+  ([%test_pred: (i[@kind k])] [@kind k] [@alloc a]
+   : ([%test_pred: (i[@kind k])][@kind k] [@mode l]))
+;;
+
+let%test_unit _ =
+  let x = (i_of_int_exn [@kind k]) 100 in
+  let x' = (i_of_int_exn [@kind k]) 0 in
+  ([%test_result: (i[@kind k])] [@kind k] [@alloc a]) x ~expect:x;
+  ([%test_eq: (i[@kind k])] [@kind k] [@alloc a]) x x;
+  ([%test_pred: (i[@kind k])] [@kind k] [@alloc a]) (fun y -> (equal_i [@kind k]) y x) x;
+  require_failed (fun () ->
+    ([%test_result: (i[@kind k])] [@kind k] [@alloc a]) x ~expect:x');
+  require_failed (fun () -> ([%test_eq: (i[@kind k])] [@kind k] [@alloc a]) x x');
+  require_failed (fun () ->
+    ([%test_pred: (i[@kind k])] [@kind k] [@alloc a])
+      (fun y -> (equal_i [@kind k]) y x')
+      x)
 ;;]
