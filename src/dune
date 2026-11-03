@@ -4,6 +4,6 @@
  (ppx_runtime_libraries ppx_assert.runtime-lib)
  (kind ppx_rewriter)
  (libraries ppx_compare.expander ppx_here.expander ppx_sexp_conv.expander
-   ppxlib)
+   ppx_template.expander ppxlib ppxlib_jane ppxlib.stdppx)
  (preprocess
   (pps ppxlib.metaquot)))
